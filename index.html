@@ -1,0 +1,240 @@
+<!-- ... existing code ... -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Entrenador MVI" />
+  <meta name="application-name" content="Entrenador Vocal MVI" />
+  <link id="appleTouchIconLink" rel="apple-touch-icon" href="" />
+  <link id="pwaManifestLink" rel="manifest" href="" />
+  <title>Entrenador Vocal | Método Vocal Integral</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+<!-- ... existing code ... -->
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+
+    .beat-pulse-active {
+      animation: pulseRing 0.35s ease-out;
+    }
+
+    /* Ajuste seguro para pantallas móviles con notch o barra inferior */
+    .safe-area-pad {
+      padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+  </style>
+</head>
+<body class="min-h-screen safe-area-pad font-sans antialiased selection:bg-amber-400/30 selection:text-amber-200">
+
+  <!-- Contenedor Principal -->
+  <div class="max-w-6xl mx-auto px-4 py-5 sm:px-6 lg:px-8 space-y-5">
+
+    <!-- Cabecera Institucional -->
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-zinc-800/90">
+      <div class="flex items-start sm:items-center gap-3.5">
+        <!-- Emblema SVG de Nueva Escuela de Canto / Método Vocal Integral -->
+        <div class="w-11 h-11 rounded-2xl bg-obsidian-900 border border-amber-400/40 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/10" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="28" stroke="#fbbf24" stroke-width="2.5" stroke-opacity="0.35" />
+            <path d="M22 44V20L32 34L42 20V44" stroke="#fbbf24" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="32" cy="46" r="2.5" fill="#fde68a" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.7)]"></span>
+            <span class="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-amber-400">Nueva Escuela de Canto | Método Vocal Integral</span>
+          </div>
+          <h1 class="mt-0.5 text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            Entrenador de Escalas y Vocalizaciones
+          </h1>
+        </div>
+      </div>
+
+      <!-- Controles de Audio y Volumen -->
+<!-- ... existing code ... -->
+    <!-- Notificación no intrusiva (reemplaza alert) -->
+    <div id="statusBanner" class="hidden rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200 flex items-center justify-between">
+      <span id="statusBannerText"></span>
+      <button id="closeBannerBtn" type="button" class="text-xs uppercase tracking-wider text-amber-400 hover:text-amber-300 font-semibold ml-4">Cerrar</button>
+    </div>
+
+    <!-- Aviso discreto para instalar la aplicación en el teléfono -->
+    <div id="installAppBar" class="rounded-2xl border border-zinc-800 bg-obsidian-900/95 px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="space-y-0.5">
+        <span class="text-xs font-semibold uppercase tracking-wider text-amber-400 block">Acceso directo en el teléfono</span>
+        <p id="installGuideText" class="text-xs sm:text-sm text-zinc-300">
+          Instala la aplicación en tu pantalla de inicio para abrirla a pantalla completa sin barras del navegador.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+        <button
+          id="btnInstallApp"
+          type="button"
+          class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-400/15 hover:bg-amber-400/25 text-amber-300 border border-amber-400/40 transition focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+        >
+          Añadir a pantalla de inicio
+        </button>
+        <button
+          id="btnDismissInstall"
+          type="button"
+          class="px-2.5 py-2 rounded-xl text-xs font-medium text-zinc-400 hover:text-zinc-200 transition"
+        >
+          Ocultar
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel Superior: Monitor Activo y Secuencia de Grados -->
+<!-- ... existing code ... -->
+      dom: {
+        btnTestAudio: document.getElementById('btnTestAudio'),
+        volumeSlider: document.getElementById('volumeSlider'),
+        volumeLabel: document.getElementById('volumeLabel'),
+        statusBanner: document.getElementById('statusBanner'),
+        statusBannerText: document.getElementById('statusBannerText'),
+        closeBannerBtn: document.getElementById('closeBannerBtn'),
+        installAppBar: document.getElementById('installAppBar'),
+        installGuideText: document.getElementById('installGuideText'),
+        btnInstallApp: document.getElementById('btnInstallApp'),
+        btnDismissInstall: document.getElementById('btnDismissInstall'),
+        currentTonicDisplay: document.getElementById('currentTonicDisplay'),
+<!-- ... existing code ... -->
+      // Pausa de respiración
+      document.querySelectorAll('.pause-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.pauseBeats = Number(btn.dataset.pause);
+          document.querySelectorAll('.pause-btn').forEach(b => {
+            b.className = 'pause-btn py-2 px-3 rounded-xl text-xs font-medium bg-obsidian-950 text-zinc-300 border border-zinc-800 transition';
+          });
+          btn.className = 'pause-btn py-2 px-3 rounded-xl text-xs font-medium bg-amber-400/15 text-amber-300 border border-amber-400/50 transition';
+        });
+      });
+
+      setupPwaInstall();
+    }
+
+    // SOPORTE PWA EMBEBIDO Y ACCESO DIRECTO EN MÓVIL
+    let deferredInstallPrompt = null;
+
+    function createSvgIconDataUrl(size) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#09090b"/><circle cx="32" cy="32" r="24" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-opacity="0.4"/><path d="M21 44V20L32 34L43 20V44" fill="none" stroke="#fbbf24" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="47" r="2.8" fill="#fde68a"/></svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function injectEmbeddedPwaManifest() {
+      try {
+        const icon192 = createSvgIconDataUrl(192);
+        const icon512 = createSvgIconDataUrl(512);
+
+        const appleIconLink = document.getElementById('appleTouchIconLink');
+        if (appleIconLink) {
+          appleIconLink.href = icon192;
+        }
+
+        const manifestData = {
+          name: 'Entrenador de Escalas y Vocalizaciones | Método Vocal Integral',
+          short_name: 'Entrenador MVI',
+          description: 'Entrenador vocal interactivo de Nueva Escuela de Canto basado en el Método Vocal Integral.',
+          start_url: '.',
+          display: 'standalone',
+          orientation: 'portrait-primary',
+          background_color: '#09090b',
+          theme_color: '#09090b',
+          lang: 'es',
+          icons: [
+            {
+              src: icon192,
+              sizes: '192x192',
+              type: 'image/svg+xml',
+              purpose: 'any maskable'
+            },
+            {
+              src: icon512,
+              sizes: '512x512',
+              type: 'image/svg+xml',
+              purpose: 'any maskable'
+            }
+          ]
+        };
+
+        const manifestLink = document.getElementById('pwaManifestLink');
+        if (manifestLink) {
+          const encodedManifest = encodeURIComponent(JSON.stringify(manifestData));
+          manifestLink.href = `data:application/manifest+json;charset=utf-8,${encodedManifest}`;
+        }
+      } catch (err) {
+        // Si el entorno restringe esquemas data: en manifest, la app sigue funcionando sin interrupciones
+      }
+    }
+
+    function isRunningStandalone() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function setupPwaInstall() {
+      if (isRunningStandalone()) {
+        dom.installAppBar.classList.add('hidden');
+        return;
+      }
+
+      const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+      if (isIos) {
+        dom.installGuideText.textContent = 'En Safari, pulsa el botón Compartir y luego selecciona "Añadir a pantalla de inicio" para abrirla a pantalla completa.';
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        dom.installAppBar.classList.remove('hidden');
+        dom.installGuideText.textContent = 'Puedes instalar esta herramienta como aplicación en tu teléfono para abrirla directamente desde tu pantalla de inicio.';
+      });
+
+      dom.btnInstallApp.addEventListener('click', async () => {
+        if (deferredInstallPrompt) {
+          try {
+            deferredInstallPrompt.prompt();
+            const choice = await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            if (choice && choice.outcome === 'accepted') {
+              dom.installAppBar.classList.add('hidden');
+              showBanner('Aplicación añadida a la pantalla de inicio.');
+            }
+          } catch (err) {
+            showBanner('Usa el menú del navegador y selecciona "Añadir a pantalla de inicio".');
+          }
+        } else if (isIos) {
+          showBanner('En iPhone/iPad: toca Compartir en el navegador y elige "Añadir a pantalla de inicio".');
+        } else {
+          showBanner('Abre el menú de tu navegador (tres puntos) y elige "Añadir a pantalla de inicio" o "Instalar aplicación".');
+        }
+      });
+
+      dom.btnDismissInstall.addEventListener('click', () => {
+        dom.installAppBar.classList.add('hidden');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        dom.installAppBar.classList.add('hidden');
+        deferredInstallPrompt = null;
+      });
+    }
+
+    // 14. INICIALIZACIÓN AL CARGAR LA PÁGINA
+    window.addEventListener('DOMContentLoaded', () => {
+      injectEmbeddedPwaManifest();
+      populateRangeSelectors();
+      renderPatternGrid();
+      updatePatternDescription();
+      renderDegreeSequence();
+      buildPianoKeyboard();
+      updateTonicUI();
+      bindEvents();
+    });
+  </script>
+</body>
+</html>
